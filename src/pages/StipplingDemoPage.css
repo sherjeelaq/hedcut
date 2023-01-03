@@ -1,0 +1,22 @@
+h2 {
+  margin-left: 16px;
+}
+
+.settings {
+  margin-left: 6px;
+}
+
+.images {
+  margin-left: 6px;
+  width: 100%;
+  height: 100%;
+}
+
+.input_file {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.canvas {
+  width: 72vw;
+}
