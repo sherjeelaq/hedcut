@@ -25,6 +25,10 @@ function StyleDemoPage() {
   }
 
   const getPrediction = async () => {
+    if (!inputFile || !prompt || !structValue || !conceptValue) {
+      alert('Please fill all fields!')
+      return
+    }
     setOutputUrls([])
     setLoading(true)
     const formData = new FormData()
@@ -34,10 +38,13 @@ function StyleDemoPage() {
     formData.append('structValue', structValue)
     formData.append('conceptValue', conceptValue)
 
-    await fetch('http://localhost:4000/getPromptPredictions', {
-      method: 'POST',
-      body: formData
-    })
+    await fetch(
+      `${import.meta.env.VITE_BACKEND_API}/getPromptPredictions`,
+      {
+        method: 'POST',
+        body: formData
+      }
+    )
       .then(data => data.json())
       .then(data => {
         setOutputUrls(data.url)

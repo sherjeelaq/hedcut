@@ -23,6 +23,10 @@ function StyleDemoPage() {
   }
 
   const getPrediction = async () => {
+    if (!inputFile || !styleFile) {
+      alert('Please fill all fields!')
+      return
+    }
     setOutputUrl()
     setLoading(true)
     const formData = new FormData()
@@ -30,10 +34,13 @@ function StyleDemoPage() {
     formData.append('input', inputFile)
     formData.append('style', styleFile)
 
-    await fetch('http://localhost:4000/getStylePredictions', {
-      method: 'POST',
-      body: formData
-    })
+    await fetch(
+      `${import.meta.env.VITE_BACKEND_API}/getStylePredictions`,
+      {
+        method: 'POST',
+        body: formData
+      }
+    )
       .then(data => data.json())
       .then(data => {
         setOutputUrl(data.url)
