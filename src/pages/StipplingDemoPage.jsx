@@ -58,11 +58,6 @@ function StipplingDemoPage() {
       setInput(file)
 
       img.onload = function () {
-        const totalWidth = containerRef.current.clientWidth
-        const singleWidth = totalWidth / 2
-
-        const ratio = this.height / this.width
-
         widthRef.current = this.width * 0.5
         heightRef.current = this.height * 0.5
 

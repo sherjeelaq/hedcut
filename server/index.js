@@ -7,6 +7,9 @@ import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
 
+import { config } from 'dotenv'
+config()
+
 const { dirname } = path
 
 const __filename = fileURLToPath(import.meta.url)
@@ -17,7 +20,7 @@ const port = 4000
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, './temp/'))
+    cb(null, path.join(__dirname, './images/'))
   },
   filename: function (req, file, cb) {
     cb(
