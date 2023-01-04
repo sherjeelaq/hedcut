@@ -130,6 +130,7 @@ function StyleDemoPage() {
                     outputUrls.length > 0 &&
                     outputUrls.map(url => (
                       <img
+                        key={url}
                         src={url}
                         style={{
                           objectFit: 'contain',
