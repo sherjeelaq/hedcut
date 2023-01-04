@@ -10,10 +10,5 @@
       "src": "/(.*)",
       "dest": "index.js"
     }
-  ],
-  "functions": {
-    "*.js": {
-      "includeFiles": "temp/**"
-    }
-  }
+  ]
 }
