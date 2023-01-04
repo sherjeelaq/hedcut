@@ -1,11 +1,18 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import InputImage from '../assets/input_image.png'
+import OutputImageZero from '../assets/output_prompt_image_0.png'
+import OutputImageOne from '../assets/output_prompt_image_1.png'
+import OutputImageTwo from '../assets/output_prompt_image_2.png'
+import OutputImageThree from '../assets/output_prompt_image_3.png'
 
 function StyleDemoPage() {
   const inputImageRef = useRef()
   const containerRef = useRef()
 
   const [inputFile, setInputFile] = useState()
-  const [prompt, setPrompt] = useState('hedcut style')
+  const [prompt, setPrompt] = useState(
+    'wall street hedcut style, poster edges filter, halftone filter, portrait, black and white'
+  )
   const [structValue, setStructValue] = useState(0.16)
   const [conceptValue, setConceptValue] = useState(0.47)
 
@@ -13,15 +20,44 @@ function StyleDemoPage() {
 
   const [loading, setLoading] = useState(false)
 
+  const convertUrlToFile = useCallback(async url => {
+    let blob = await fetch(url).then(r => r.blob())
+    let dataUrl = await new Promise(resolve => {
+      let reader = new FileReader()
+      reader.onload = () => resolve(reader.result)
+      reader.readAsDataURL(blob)
+    })
+    var arr = dataUrl.split(','),
+      mime = arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]),
+      n = bstr.length,
+      u8arr = new Uint8Array(n)
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n)
+    }
+
+    return new File([u8arr], `temp_image.${mime.split('/')[1]}`, {
+      type: mime
+    })
+  }, [])
+
+  useEffect(() => {
+    async function getInitialImage() {
+      inputImageRef.current.src = InputImage
+      setInputFile(await convertUrlToFile(InputImage))
+      setOutputUrls([
+        OutputImageZero,
+        OutputImageOne,
+        OutputImageTwo,
+        OutputImageThree
+      ])
+    }
+    getInitialImage()
+  }, [convertUrlToFile])
+
   const onInputImageChange = file => {
     setInputFile(file)
     inputImageRef.current.src = URL.createObjectURL(file)
-  }
-
-  const onStyleImageChange = file => {
-    setStyleFile(file)
-
-    styleImageRef.current.src = URL.createObjectURL(file)
   }
 
   const getPrediction = async () => {
@@ -85,7 +121,9 @@ function StyleDemoPage() {
                 <div
                   ref={ref => (containerRef.current = ref)}
                   style={{
-                    width: '35vw'
+                    display: 'flex',
+                    flexDirection: 'row',
+                    flexWrap: 'wrap'
                   }}
                 >
                   {outputUrls &&
@@ -113,7 +151,6 @@ function StyleDemoPage() {
                 <legend>Prompt Details</legend>
                 <div
                   style={{
-                    width: '35vw',
                     marginBottom: 16
                   }}
                 >
@@ -127,7 +164,6 @@ function StyleDemoPage() {
                 </div>
                 <div
                   style={{
-                    width: '35vw',
                     marginBottom: 16
                   }}
                 >
@@ -146,7 +182,6 @@ function StyleDemoPage() {
                 </div>
                 <div
                   style={{
-                    width: '35vw',
                     marginBottom: 16
                   }}
                 >

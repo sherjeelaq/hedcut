@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import './StipplingDemoPage.css'
+import InputImage from '../assets/input_image.png'
 
 function StipplingDemoPage() {
   const inputCanvasRef = useRef()
@@ -12,7 +13,32 @@ function StipplingDemoPage() {
   const threshold = 0.9
 
   const [input, setInput] = useState()
-  const [points, setPoints] = useState(10000)
+  const [points, setPoints] = useState(15000)
+
+  useEffect(() => {
+    async function getInitialImage() {
+      let blob = await fetch(InputImage).then(r => r.blob())
+      let dataUrl = await new Promise(resolve => {
+        let reader = new FileReader()
+        reader.onload = () => resolve(reader.result)
+        reader.readAsDataURL(blob)
+      })
+      var arr = dataUrl.split(','),
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n)
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n)
+      }
+
+      const file = new File([u8arr], 'input_image.png', {
+        type: mime
+      })
+      setInput(file)
+    }
+    getInitialImage()
+  }, [])
 
   const onInputImageChange = useCallback(
     file => {
@@ -143,7 +169,7 @@ function StipplingDemoPage() {
     return () => {
       clearTimeout(timer)
     }
-  }, [points, onInputImageChange])
+  }, [points, input, onInputImageChange])
 
   return (
     <div>
